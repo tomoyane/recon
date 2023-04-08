@@ -1,0 +1,54 @@
+.mat-tab-labels {
+  justify-content: center;
+}
+
+.mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+  background: #565AC6 !important;
+}
+
+.mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+  background: #565AC6 !important;
+}
+
+.mat-select-panel {
+  min-width: 0 !important;
+}
+
+.primary {
+  color: #565AC6;
+}
+
+.primary-bk {
+  background: #565AC6;
+  color: white;
+}
+
+.mat-progress-spinner circle, .mat-spinner circle {
+  stroke: #565AC6;
+}
+
+.mat-list-text {
+  display: inline-block !important;
+}
+
+.permission-dialog {
+  background: none !important;
+}
+
+body {
+  min-width: 340px;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+@import '~@angular/material/theming';
+@include mat-core();
+
+$dark-primary: mat-palette($mat-blue-grey);
+$dark-accent:  mat-palette($mat-amber, A200, A100, A400);
+$dark-warn:    mat-palette($mat-deep-orange);
+$dark-theme:   mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
+
+.unicorn-dark-theme {
+  @include angular-material-theme($dark-theme);
+}

@@ -1,0 +1,53 @@
+.uppy-frame {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    bottom: 10px;
+    visibility: hidden;
+    z-index: 2147483647;
+}
+
+.uppy-no-camera-frame {
+    height: 100%;
+    width: 100%;
+    padding: 2px;
+    border: 0;
+    display: block;
+    visibility: initial;
+    z-index: 2147483646;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+}
+
+.uppy-camera-frame {
+    all: unset;
+    margin-top: 0;
+    height: 300px;
+    width: 435px;
+    z-index: 2147483646;
+    padding: 2px;
+    border-width: 0;
+    border-style: initial;
+    border-color: initial;
+    border-image: initial;
+}
+
+.uppy-mouse-range {
+    cursor: move;
+    border-radius: 50%;
+    width: 200px;
+    height: 250px;
+    bottom: 10px;
+    visibility: visible;
+    position: fixed;
+    display: inline-table;
+}
+
+.uppy-mouse-ctl {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    position: fixed;
+    left: 10px;
+}

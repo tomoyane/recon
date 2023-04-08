@@ -1,0 +1,241 @@
+.record-container {
+  width: 300px;
+  height: 200px;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  display: inline-flex;
+}
+
+.loading-layout {
+  width: 100px;
+  left: 41%;
+  right: 50%;
+  margin-top: 44%;
+  position: absolute;
+}
+
+.record-camera-circle-s {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  text-align: center;
+  line-height: 20px;
+  margin-left: 10px !important;
+}
+
+.record-camera-circle-s-active {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: black;
+  color: white;
+  text-align: center;
+  line-height: 20px;
+  margin-left: 10px !important;
+}
+
+.record-camera-circle-m {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: white;
+  text-align: center;
+  line-height: 24px;
+  margin-left: 6px !important;
+}
+
+.record-camera-circle-m-active {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: black;
+  color: white;
+  text-align: center;
+  line-height: 24px;
+  margin-left: 6px !important;
+}
+
+.record-camera-circle-l {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: white;
+  text-align: center;
+  line-height: 28px;
+  margin-left: 6px !important;
+}
+
+.record-camera-circle-l-active {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: black;
+  color: white;
+  text-align: center;
+  line-height: 28px;
+  margin-left: 6px !important;
+}
+
+.record-ctl-camera {
+  margin-top: 60px;
+  height: 34px;
+  position: fixed;
+}
+
+.record-ctl-camera-active {
+  margin-left: 20px;
+  width: 105px;
+  height: 30px;
+  padding: 4px 4px 4px 6px;
+  background: #ddd;
+  border-radius: 6px 6px 6px 6px;
+}
+
+.record-stop {
+  float: left;
+  width: 200px;
+  margin-top: 80px;
+}
+
+.record-btn {
+  display: inline-flex;
+  height: 40px;
+  margin-left: 20px;
+  margin-top: 30px;
+}
+
+.record-time {
+  display: inline-flex;
+  height: 26px;
+  margin-top: 32px;
+  margin-left: 10px;
+  border: 1px solid #ddd;
+  background: #ddd;
+  padding: 4px;
+  color: #555555;
+  border-radius: 10px 10px 10px 10px;
+  line-height: 1.8;
+  position: absolute;
+}
+
+.record-stop-img {
+  width: 40px;
+}
+
+.record-content-loading-s {
+  background-color: #F3F2F3;
+  background-size: 60px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  display: inline-flex;
+}
+
+.record-content-loading-m {
+  background-color: #F3F2F3;
+  background-size: 60px;
+  width: 230px;
+  height: 230px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  display: inline-flex;
+}
+
+.record-content-loading-l {
+  background-color: #F3F2F3;
+  background-size: 60px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  display: inline-flex;
+}
+
+.record-content-screen-s {
+  background-image: url('../../../assets/ic_camera.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #F3F2F3;
+  background-size: 60px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  display: -webkit-box;
+}
+
+.record-content-screen-m {
+  background-image: url('../../../assets/ic_camera.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #F3F2F3;
+  background-size: 60px;
+  width: 230px;
+  height: 230px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  display: -webkit-box;
+}
+
+.record-content-screen-l {
+  background-image: url('../../../assets/ic_camera.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #F3F2F3;
+  background-size: 60px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 10px;
+  top: 5px;
+  left: 10px;
+  display: -webkit-box;
+}
+.camera-data-s {
+  object-fit: cover;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(0, 0, 0, .3);
+}
+
+.camera-data-m {
+  object-fit: cover;
+  width: 230px;
+  height: 230px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(0, 0, 0, .3);
+}
+
+.camera-data-l {
+  object-fit: cover;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(0, 0, 0, .3);
+}
+
+video {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}

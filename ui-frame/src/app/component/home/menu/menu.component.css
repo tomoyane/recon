@@ -1,0 +1,354 @@
+.header {
+  text-align: left;
+  height: 60px;
+  width: 100%;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.header-right {
+  float: right;
+  margin-right: 22px;
+  margin-top: 10px;
+}
+
+.header-left {
+  float: left;
+}
+
+.img-logo {
+  width: 40px;
+  margin-top: 12px;
+  margin-left: 16px;
+}
+
+.img-app-name {
+  width: 66px;
+  margin-top: 12px;
+}
+
+.permission-dialog {
+  text-align: center;
+  width: 100%;
+  margin-top: 200px;
+}
+
+.content {
+  width: 380px;
+  text-align: center;
+  padding-bottom: 20px;
+  margin-right: 70px;
+  margin-top: 90px;
+  float: right;
+  border: 1px solid #eeeeee;
+  background: #fff;
+  box-shadow: 0 0 8px gray;
+}
+
+.content-close {
+  float: left;
+  margin-top: -80px;
+  border-radius: 50%;
+  color: #555;
+  padding: 2px;
+  background: #ddd;
+  margin-left: -14px;
+  box-shadow: 0 0 6px gray;
+}
+
+.record-content {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  display: inline-flex;
+}
+
+.loading-layout {
+  width: 100px;
+  left: 41%;
+  right: 50%;
+  margin-top: 44%;
+  position: absolute;
+}
+
+.record-menu {
+  display: inline-flex;
+  height: 40px;
+  margin-top: 140px;
+  margin-left: 20px;
+}
+
+.record-stop-img {
+  width: 40px;
+}
+
+.menu-content {
+  display: flex;
+  margin-left: 4%;
+  margin-right: 4%;
+}
+
+.menu {
+  width: 30%;
+  margin-right: 12px;
+}
+
+.menu .title {
+  margin-top: 8px;
+  font-size: 9px;
+}
+
+.menu .menu-btn {
+  height: 72px;
+  width: 100px;
+  background: #FFFFFF;
+  border: 1px solid #CCCCCC;
+}
+
+.menu .menu-btn-active {
+  height: 72px;
+  width: 100px;
+  background: #FFFFFF;
+  border: 3px solid #565AC6;
+}
+
+.ic-screen-with-camera {
+  width: 58px;
+}
+
+.ic-screen {
+  width: 48px;
+}
+
+.ic-camera {
+  width: 38px;
+}
+
+.setting-content {
+  display: flex;
+  flex-direction: column;
+  margin-right: 12px;
+  margin-left: 12px;
+}
+
+.detail {
+  margin-bottom: 32px;
+  margin-left: 22px;
+  margin-right: 22px;
+}
+
+.setting-content .item {
+  float: left;
+}
+
+.setting-content .item-value {
+  float: right;
+}
+
+.setting-content .item-select {
+  margin-top: -20px;
+}
+
+.record-btn {
+  width: 200px;
+  background: #FB6B6C;
+  color: #FFFFFF;
+}
+
+.select-item {
+  width:200px;
+}
+
+.record-content-loading-s {
+  background-color: #F3F2F3;
+  background-size: 60px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  display: inline-flex;
+}
+
+.record-content-loading-m {
+  background-color: #F3F2F3;
+  background-size: 60px;
+  width: 230px;
+  height: 230px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  display: inline-flex;
+}
+
+.record-content-loading-l {
+  background-color: #F3F2F3;
+  background-size: 60px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  display: inline-flex;
+}
+
+.record-content-screen-s {
+  background-image: url('../../../../assets/ic_camera.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #F3F2F3;
+  background-size: 60px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  display: inline-flex;
+}
+
+.record-content-screen-m {
+  background-image: url('.././../../../assets/ic_camera.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #F3F2F3;
+  background-size: 60px;
+  width: 230px;
+  height: 230px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  display: inline-flex;
+}
+
+.record-content-screen-l {
+  background-image: url('../../../../assets/ic_camera.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #F3F2F3;
+  background-size: 60px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  display: inline-flex;
+}
+.camera-data-s {
+  object-fit: cover;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(0, 0, 0, .3);
+}
+
+.camera-data-m {
+  object-fit: cover;
+  width: 230px;
+  height: 230px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(0, 0, 0, .3);
+}
+
+.camera-data-l {
+  object-fit: cover;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(0, 0, 0, .3);
+}
+
+.record-ctl-camera {
+  margin-top: 60px;
+  height: 34px;
+  position: fixed;
+}
+
+.record-ctl-camera-active {
+  margin-left: 20px;
+  width: 105px;
+  height: 30px;
+  padding: 4px 4px 4px 6px;
+  background: #ddd;
+  border-radius: 6px 6px 6px 6px;
+}
+
+.record-camera-circle-s {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  text-align: center;
+  line-height: 20px;
+}
+
+.record-camera-circle-s-active {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: black;
+  color: white;
+  text-align: center;
+  line-height: 20px;
+}
+
+.record-camera-circle-m {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: white;
+  text-align: center;
+  line-height: 24px;
+  margin-left: 6px !important;
+}
+
+.record-camera-circle-m-active {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: black;
+  color: white;
+  text-align: center;
+  line-height: 24px;
+  margin-left: 6px !important;
+}
+
+.record-camera-circle-l {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: white;
+  text-align: center;
+  line-height: 28px;
+  margin-left: 6px !important;
+}
+
+.record-camera-circle-l-active {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: black;
+  color: white;
+  text-align: center;
+  line-height: 28px;
+  margin-left: 6px !important;
+}
+
+video {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}

@@ -1,0 +1,44 @@
+.idea/
+.DS_Store
+
+# outputs
+dist/
+dist-dev/
+dist.zip
+dist-dev.zip
+menu-frame/dist/
+recording-frame/dist/
+user-frame/dist/
+
+# dependencies
+/node_modules
+menu-frame/node_modules/
+recording-frame/node_modules/
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+
+recording-frame/.sass-cache
+recording-frame/connect.lock
+recording-frame/coverage
+recording-frame/libpeerconnection.log
+recording-frame/npm-debug.log
+recording-frame/yarn-error.log
+recording-frame/testem.log
+recording-frame/typings
+
+menu-frame/.sass-cache
+menu-frame/connect.lock
+menu-frame/coverage
+menu-frame/libpeerconnection.log
+menu-frame/npm-debug.log
+menu-frame/yarn-error.log
+menu-frame/testem.log
+menu-frame/typings

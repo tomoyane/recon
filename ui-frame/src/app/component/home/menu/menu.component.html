@@ -1,0 +1,114 @@
+<div>
+  <div class="menu-content">
+    <div class="menu">
+      <button mat-raised-button
+        (click)="onClickType(screenWithCameraMap.get(recordTypeValue.type))"
+              type="submit" class="{{screenWithCameraMap.get(recordTypeValue.btnClass)}}">
+        <img class="{{screenWithCameraMap.get(recordTypeValue.imgClass)}}"
+          src="{{screenWithCameraMap.get(recordTypeValue.imgSrc)}}"
+          alt=""/>
+      </button>
+      <p class="title">
+        {{screenWithCameraMap.get(recordTypeValue.title)}}
+      </p>
+    </div>
+
+    <div class="menu">
+      <button mat-raised-button
+        (click)="onClickType(screenMap.get(recordTypeValue.type))"
+              type="submit" class="{{screenMap.get(recordTypeValue.btnClass)}}">
+        <img class="{{screenMap.get(recordTypeValue.imgClass)}}"
+          src="{{screenMap.get(recordTypeValue.imgSrc)}}"
+          alt=""/>
+      </button>
+      <p class="title">
+        {{screenMap.get(recordTypeValue.title)}}
+      </p>
+    </div>
+
+    <div class="menu">
+      <button mat-raised-button
+        (click)="onClickType(cameraMap.get(recordTypeValue.type))"
+              type="submit" class="{{cameraMap.get(recordTypeValue.btnClass)}}">
+        <img class="{{cameraMap.get(recordTypeValue.imgClass)}}"
+          src="{{cameraMap.get(recordTypeValue.imgSrc)}}"
+          alt=""/>
+      </button>
+      <p class="title">
+        {{cameraMap.get(recordTypeValue.title)}}
+      </p>
+    </div>
+  </div>
+  <br>
+  <div class="setting-content">
+    <div class="detail">
+      <span class="item">
+        {{textRecordAudio}}
+      </span>
+      <mat-slide-toggle
+        (change)="onChangeAudio($event)"
+        [checked]="isAudio"
+        class="item-value"></mat-slide-toggle>
+    </div>
+    <div class="detail" *ngIf="isMicrophonePermission">
+      <span class="item">
+        {{textSelectMicrophone}}
+      </span>
+      <mat-form-field class="item-value item-select">
+        <mat-label>{{textSelect}}</mat-label>
+        <mat-select (selectionChange)="onChangeExternalMicrophone($event)" [(value)]="audioDefault">
+          <mat-option class="select-item" [value]="device.key" *ngFor="let device of audioDevices | keyvalue">
+            {{device.key}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="detail" *ngIf="selectedType !== recordType.screen">
+      <span class="item">
+        {{textSelectCamera}}
+      </span>
+      <mat-form-field class="item-value item-select">
+        <mat-label>{{textSelect}}</mat-label>
+        <mat-select (selectionChange)="onChangeExternalCamera($event)" [(value)]="videoDefault">
+          <mat-option class="select-item" [value]="device.key" *ngFor="let device of videoDevices | keyvalue">
+            {{device.key}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div>
+    <button mat-raised-button
+      (click)="onClickStartRecord()"
+            type="submit"
+            class="record-btn">
+      {{textRecord}}
+    </button>
+  </div>
+  <div [ngClass]="recordContentClassName" cdkDrag (cdkDragEnded)="onDragEnd($event)">
+    <div class="loading-layout" *ngIf="selectedType !== recordType.screen" >
+      <mat-spinner diameter="40" mode="indeterminate"></mat-spinner>
+    </div>
+    <video #uppy_local_video
+      id="uppy_local_video"
+      autoplay
+      muted="muted"
+      [ngClass]="cameraSizeClassName">
+    </video>
+    <div class="row">
+      <div class="record-ctl-camera">
+        <div class="record-ctl-camera-active">
+          <p (click)="onClickSizeS()"
+            [ngClass]="cameraSize === cameraSizeEnum.small ? 'record-camera-circle-s-active' : 'record-camera-circle-s'">
+          </p>
+          <p (click)="onClickSizeM()"
+            [ngClass]="cameraSize === cameraSizeEnum.medium ? 'record-camera-circle-m-active' : 'record-camera-circle-m'">
+          </p>
+          <p (click)="onClickSizeL()"
+            [ngClass]="cameraSize === cameraSizeEnum.large ? 'record-camera-circle-l-active' : 'record-camera-circle-l'">
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

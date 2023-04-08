@@ -1,0 +1,35 @@
+<div *ngIf="!isFinish">
+  <div [ngClass]="recordContentClassName">
+    <div class="loading-layout" *ngIf="recordType !== recordTypeEnum.screen">
+      <mat-spinner diameter="40" mode="indeterminate"></mat-spinner>
+    </div>
+    <video #uppy_local_video
+           autoplay
+           muted="muted"
+           [ngClass]="cameraSizeClassName">
+    </video>
+    <div class="row">
+      <div class="record-ctl-camera">
+        <div class="record-ctl-camera-active">
+          <p (click)="onClickSizeS()"
+             [ngClass]="cameraSize === cameraSizeEnum.small ? 'record-camera-circle-s-active' : 'record-camera-circle-s'">
+          </p>
+          <p (click)="onClickSizeM()"
+             [ngClass]="cameraSize === cameraSizeEnum.medium ? 'record-camera-circle-m-active' : 'record-camera-circle-m'">
+          </p>
+          <p (click)="onClickSizeL()"
+             [ngClass]="cameraSize === cameraSizeEnum.large ? 'record-camera-circle-l-active' : 'record-camera-circle-l'">
+          </p>
+        </div>
+      </div>
+      <div class="record-stop">
+        <div class="record-btn">
+          <img src="ui-frame/assets/ic_stop_recording.png" class="record-stop-img" (click)="onClickStopRecord()"/>
+        </div>
+        <div class="record-time">
+          {{displayTime}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="content" *ngIf="!isDisableUi">
+  <div class="header">
+    <div class="header-left">
+      <img class="img-logo" src="ui-frame/assets/ic_logo.png" alt="">
+      <img class="img-app-name" src="ui-frame/assets/ic_app_name.png" alt="">
+    </div>
+    <div class="header-right">
+      <button mat-icon-button (click)="onClickVideoMenu()">
+        <mat-icon [ngStyle]="{'color': !isNotification ? '#565AC6' : '#000'}">
+          videocam
+        </mat-icon>
+      </button>
+    </div>
+  </div>
+  <mat-icon class="content-close" (click)="onClickClose()">
+    close
+  </mat-icon>
+  <div *ngIf="!isNotification">
+    <app-menu></app-menu>
+  </div>
+</div>
