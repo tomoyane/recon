@@ -50,7 +50,7 @@ export class MenuComponent implements OnDestroy {
   private audioId = null;
   private videoId = null;
 
-  @ViewChild('uppy_local_video')
+  @ViewChild('recon_local_video')
   public localVideo: ElementRef;
 
   constructor(private recorderService: RecorderService,

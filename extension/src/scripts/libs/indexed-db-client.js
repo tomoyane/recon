@@ -7,7 +7,7 @@ let dbClient = null;
  * @param videoId
  */
 export function saveIndexedDb(blob, videoId) {
-    const req = window.indexedDB.open('uppy_db', DB_VERSION);
+    const req = window.indexedDB.open('recon_db', DB_VERSION);
     req.onerror = function () {
     };
 

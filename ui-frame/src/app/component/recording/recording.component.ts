@@ -24,7 +24,7 @@ export class RecordingComponent implements OnDestroy {
   public displayTime = null;
   public time = 0;
 
-  @ViewChild('uppy_local_video')
+  @ViewChild('recon_local_video')
   public localVideo: ElementRef;
 
   constructor(private recorderService: RecorderService) {

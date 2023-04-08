@@ -1,7 +1,5 @@
 /**
  * Generate uuid.
- *
- * @return {string}
  */
 export function generateUuid() {
     let chars = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.split('');
@@ -19,30 +17,7 @@ export function generateUuid() {
 }
 
 /**
- * Login check.
- *
- * @return {boolean}
- */
-export function isLogin() {
-    return !(uId === null || pId === null || authId === null || rAuthId === null);
-}
-
-/**
- * Generate video url.
- *
- * @return {string}
- */
-export function generateVideoUrl() {
-    const fileName = generateUuid();
-    const objectName = `${pId}/${videoId}/${fileName}`;
-    return `https://${STORAGE_HOST}/v0/b/${BUCKET_NAME}/o?name=${objectName}`;
-}
-
-/**
  * Convert url to blob.
- *
- * @param url ObjectUrl
- * @return {Promise<Blob>}
  */
 export function convertUrlToBlob(url) {
     return fetch(url).then(r => r.blob());
@@ -54,20 +29,6 @@ export function convertUrlToBlob(url) {
 export function calculateVideoTime(startRecodingTimeMs) {
     const nowTimeMs = new Date().getTime() / 1000;
     return Math.floor(nowTimeMs) - Math.floor(startRecodingTimeMs);
-}
-
-/**
- * Check token expired.
- *
- * @return true or false
- */
-export function checkTokenExpired() {
-    const payloadBase64 = authId.split('.');
-    const payloadJson = JSON.parse(atob(payloadBase64[1]));
-    const now = new Date();
-    // 10 minute ago of expired
-    const expDate = new Date((payloadJson['exp'] * 1000) - 600000);
-    return expDate.getTime() <= now.getTime();
 }
 
 /**
@@ -85,12 +46,12 @@ export function generateRecordingFrame(srcUrl, ctlLeftPointer, ctlTopPointer,
                                        mouseRangeLeftPointer, mouseRangeTopPointer, isBottom) {
 
     const container = document.createElement('div');
-    container.id = 'uppy_frame';
-    container.className = 'uppy-frame';
+    container.id = 'recon_frame';
+    container.className = 'recon-frame';
 
     const mouseRange = document.createElement('div');
-    mouseRange.id = 'uppy_mouse_range';
-    mouseRange.className = 'uppy-mouse-range';
+    mouseRange.id = 'recon_mouse_range';
+    mouseRange.className = 'recon-mouse-range';
     if (mouseRangeLeftPointer !== null) {
         mouseRange.style.left = mouseRangeLeftPointer;
     }
@@ -102,8 +63,8 @@ export function generateRecordingFrame(srcUrl, ctlLeftPointer, ctlTopPointer,
     }
 
     const ctl = document.createElement('div');
-    ctl.id = 'uppy_ctl';
-    ctl.className = 'uppy-mouse-ctl';
+    ctl.id = 'recon_ctl';
+    ctl.className = 'recon-mouse-ctl';
     if (ctlLeftPointer !== null) {
         ctl.style.left = ctlLeftPointer;
     }
@@ -115,10 +76,10 @@ export function generateRecordingFrame(srcUrl, ctlLeftPointer, ctlTopPointer,
     }
 
     const iframe = document.createElement('iframe');
-    iframe.id = 'uppy_iframe'
+    iframe.id = 'recon_iframe'
     iframe.src = srcUrl
     iframe.allow = 'microphone; camera';
-    iframe.className = 'uppy-camera-frame';
+    iframe.className = 'recon-camera-frame';
 
     mouseRange.appendChild(ctl);
     mouseRange.appendChild(iframe);
@@ -131,25 +92,25 @@ export function generateRecordingFrame(srcUrl, ctlLeftPointer, ctlTopPointer,
  */
 export function generateNotRecordingFrame(srcUrl) {
     const container = document.createElement('div');
-    container.id = 'uppy_frame';
-    container.className = 'uppy-frame';
+    container.id = 'recon_frame';
+    container.className = 'recon-frame';
 
     const iframe = document.createElement('iframe');
-    iframe.id = 'uppy_iframe'
+    iframe.id = 'recon_iframe'
     iframe.src = srcUrl;
     iframe.allow = 'microphone; camera';
-    iframe.className = 'uppy-no-camera-frame';
+    iframe.className = 'recon-no-camera-frame';
 
     container.appendChild(iframe);
     return container;
 }
 
 /**
- * Remove uppy tags.
+ * Remove tags.
  */
-export function removeUppyTags() {
-    const uppyFrame = document.getElementById('uppy_frame');
-    if (uppyFrame !== null) {
-        uppyFrame.remove();
+export function removeReconTags() {
+    const reconFrame = document.getElementById('recon_frame');
+    if (reconFrame !== null) {
+        reconFrame.remove();
     }
 }
