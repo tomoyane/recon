@@ -85,6 +85,13 @@ export function execute(request, sendResponse) {
                 recorder.stop();
             }
         }
+
+        if (mediaStream !== null) {
+            mediaStream.getTracks().forEach(track => {
+                track.stop();
+            });
+        }
+        initializeRecordVal();
         return TYPE_NO_FRAME;
     }
 
@@ -203,27 +210,15 @@ export function sendToDlCommand() {
 }
 
 export function initializeRecordVal(isSuccess = false) {
-    if (isSuccess) {
-        chunks = [];
-        isRecording = false;
-        recorder = null;
-        startRecordingTimeMs = 0;
-        ctlLeftPointer = null;
-        ctlTopPointer = null;
-        mouseRangeLeftPointer = null;
-        mouseRangeTopPointer = null;
-        mediaStream = null;
-    } else {
-        videoId = null;
-        chunks = [];
-        blob = null;
-        isRecording = false;
-        recorder = null;
-        ctlLeftPointer = null;
-        ctlTopPointer = null;
-        mouseRangeLeftPointer = null;
-        mouseRangeTopPointer = null;
-        startRecordingTimeMs = 0;
-        mediaStream = null;
-    }
+    videoId = null;
+    chunks = [];
+    blob = null;
+    isRecording = false;
+    recorder = null;
+    ctlLeftPointer = null;
+    ctlTopPointer = null;
+    mouseRangeLeftPointer = null;
+    mouseRangeTopPointer = null;
+    startRecordingTimeMs = 0;
+    mediaStream = null;
 }

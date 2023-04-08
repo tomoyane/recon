@@ -5,8 +5,7 @@ import {execute} from '../libs/processing'
  */
 chrome.runtime.onInstalled.addListener(details => {
     if (details.reason === 'install') {
-        chrome.tabs.create({url: 'https://uppy.jp?chrome_extension_installed=true'}, function (tab) {
-        });
+        // chrome.tabs.create({url: 'https://example.com'}, function (tab) {});
     }
 });
 

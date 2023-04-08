@@ -12,7 +12,6 @@ setTimeout(
             } else {
                 const activeTabId = tab[0].id;
                 if (chrome.extension.getBackgroundPage().isRecording) {
-                    // TODO: 起動中は拡張で停止も可能にしたい
                     window.close();
                     return;
                 }
@@ -47,15 +46,14 @@ function insertCannotRecord() {
     data.innerHTML =
         `<div class="cannot-record">
             <img class="cannot-record-img" src="cannot_record.png" alt="record"/>
-            <h2 class="warning-txt">このページでは動画が撮影できません</h2>
+            <h2 class="warning-txt">Could not record video on thi page</h2>
             <p>
-            一部のページでは撮影ができません。
+            Please change page 
             <br>
-            <a href="https://app.uppy.jp" rel="noopener" target="_blank">
-                https://app.uppy.jp
-            </a> など別ページを開き、
+            <a href="https://example.com" rel="noopener" target="_blank">
+                https://example.com
+            </a> 
             <br>
-            再度撮影をお試しください。
             </p>           
          </div>`;
 

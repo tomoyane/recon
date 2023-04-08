@@ -80,5 +80,5 @@ cp manifest.json ${dir_name}/
 # Compression dist
 zip -r ${dir_name}.zip ${dir_name}
 
-echo "Completed uppy extension build!"
+echo "Completed recon build!"
 exit 0

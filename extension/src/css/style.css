@@ -1,4 +1,4 @@
-.uppy-frame {
+.recon-frame {
     height: 100%;
     width: 100%;
     position: fixed;
@@ -7,7 +7,7 @@
     z-index: 2147483647;
 }
 
-.uppy-no-camera-frame {
+.recon-no-camera-frame {
     height: 100%;
     width: 100%;
     padding: 2px;
@@ -20,7 +20,7 @@
     bottom: 0;
 }
 
-.uppy-camera-frame {
+.recon-camera-frame {
     all: unset;
     margin-top: 0;
     height: 300px;
@@ -33,7 +33,7 @@
     border-image: initial;
 }
 
-.uppy-mouse-range {
+.recon-mouse-range {
     cursor: move;
     border-radius: 50%;
     width: 200px;
@@ -44,7 +44,7 @@
     display: inline-table;
 }
 
-.uppy-mouse-ctl {
+.recon-mouse-ctl {
     width: 200px;
     height: 200px;
     border-radius: 50%;
