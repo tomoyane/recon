@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "uppy",
-  "description": "【β version】Video share platform",
-  "version": "0.0.31",
+  "name": "recon",
+  "description": "Video recording tool",
+  "version": "0.0.1",
   "icons": {
     "16": "extension/ic_logo.png",
     "48": "extension/ic_logo.png",
