@@ -1,5 +1,4 @@
-import {subscribeCookie, postRefreshToken, execute} from '../libs/processing'
-import {isLogin, checkTokenExpired} from '../libs/util'
+import {execute} from '../libs/processing'
 
 /**
  * Initial install Listener.
@@ -78,19 +77,7 @@ chrome.tabs.onUpdated.addListener((id, info, tab) => {
  */
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (!isRecording) {
-        // Wait get cookie
-        subscribeCookie().then(res => {
-            if (isLogin()) {
-                const isExpired = checkTokenExpired();
-                // Refresh token
-                if (isExpired) {
-                    postRefreshToken(rAuthId);
-                }
-            }
-            execute(request, sendResponse);
-        });
-    } else {
-        execute(request, sendResponse);
     }
+    execute(request, sendResponse);
     return true;
 });

@@ -5,7 +5,6 @@ import {
     generateRecordingFrame,
     getBodyWebSite,
     removeUppyTags,
-    changeCameraFrameSize,
 } from '../libs/util'
 import {saveIndexedDb} from '../libs/indexed-db-client'
 
@@ -26,13 +25,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (component === COMPONENT_BACKGROUND && type === TYPE_INSTALLED_CHROME_EXT) {
         createInstalledChromeExtTag();
     }
-
-    // /**
-    // //  * Create user frame.
-    // //  */
-    // if (component === COMPONENT_BACKGROUND && type === TYPE_USER_FRAME) {
-    //     createAuthFrame();
-    // }
 
     /**
      * Create menu frame.
@@ -67,10 +59,28 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
      */
     if (component === COMPONENT_BACKGROUND && type === TYPE_SAVE_INDEXED_DB) {
         convertUrlToBlob(request.blobUrl).then(blob => {
+            dl(blob);
             saveIndexedDb(blob, request.videoId);
         });
     }
 });
+
+function dl(data) {
+    var saveData = (function () {
+        var a = document.createElement("a");
+        document.body.appendChild(a);
+        a.style = "display: none";
+        return function (data, fileName) {
+            a.href = window.URL.createObjectURL(data);
+            a.download = fileName;
+            a.click();
+            window.URL.revokeObjectURL(a.href);
+        };
+    }());
+    saveData(data, 'test');
+}
+
+
 
 /**
  * Create chrome installed tag.
