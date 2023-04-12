@@ -1,4 +1,24 @@
-import {execute} from '../libs/processing'
+import {
+    execute
+} from '../libs/processing'
+
+import {
+    setTabId,
+    getIsRecording,
+    getComponentBackground,
+    getTypeRecordingFrame,
+    getRecordType,
+    getAudioDeviceId,
+    getVideoDeviceId,
+    getStartRecordingTimeMs,
+    getCtlLeftPointer,
+    getCtlTopPointer,
+    getMouseRangeLeftPointer,
+    getMouseRangeTopPointer,
+    getCameraSize,
+    getTypeInstalledChromeExt
+} from "../constant"
+
 
 /**
  * Initial install Listener.
@@ -9,33 +29,37 @@ chrome.runtime.onInstalled.addListener(details => {
     }
 });
 
+
 /**
  * Tab Active Listener.
  * Catch tab activation change.
  */
 chrome.tabs.onActivated.addListener(activeInfo => {
-    tabId = activeInfo.tabId;
-    if (isRecording) {
-        chrome.tabs.sendMessage(tabId, {
-            tabId: tabId,
-            component: COMPONENT_BACKGROUND,
-            type: TYPE_RECORDING_FRAME,
-            recordType: recordType,
-            audioId: audioDeviceId,
-            videoId: videoDeviceId,
-            startRecordingTimeMs: startRecordingTimeMs,
-            ctlLeftPointer: ctlLeftPointer,
-            ctlTopPointer: ctlTopPointer,
-            mouseRangeLeftPointer: mouseRangeLeftPointer,
-            mouseRangeTopPointer: mouseRangeTopPointer,
-            cameraSize: cameraSize
-        });
+    console.log("call frame " + getComponentBackground() + " " + activeInfo.tabId)
+    setTabId(activeInfo.tabId);
+    if (getIsRecording()) {
+        chrome.tabs.sendMessage(activeInfo.tabId, {
+            tabId: activeInfo.tabId,
+            component: getComponentBackground(),
+            type: getTypeRecordingFrame(),
+            recordType: getRecordType(),
+            audioId: getAudioDeviceId(),
+            videoId: getVideoDeviceId(),
+            startRecordingTimeMs: getStartRecordingTimeMs(),
+            ctlLeftPointer: getCtlLeftPointer(),
+            ctlTopPointer: getCtlTopPointer(),
+            mouseRangeLeftPointer: getMouseRangeLeftPointer(),
+            mouseRangeTopPointer: getMouseRangeTopPointer(),
+            cameraSize: getCameraSize()
+        }).then((response) => {
+        }).catch((error) => {});
     }
-    chrome.tabs.sendMessage(tabId, {
-        tabId: tabId,
-        component: COMPONENT_BACKGROUND,
-        type: TYPE_INSTALLED_CHROME_EXT
-    });
+    chrome.tabs.sendMessage(activeInfo.tabId, {
+        tabId: activeInfo.tabId,
+        component: getComponentBackground(),
+        type: getTypeInstalledChromeExt()
+    }).then((response) => {
+    }).catch((error) => {});
 });
 
 /**
@@ -43,29 +67,32 @@ chrome.tabs.onActivated.addListener(activeInfo => {
  * Catch tab change.
  */
 chrome.tabs.onUpdated.addListener((id, info, tab) => {
+    console.log("update frame " + JSON.stringify(info) + " " + tab.active)
     if (info.status === 'complete' && tab.active) {
-        tabId = id;
-        if (isRecording) {
-            chrome.tabs.sendMessage(tabId, {
-                tabId: tabId,
-                component: COMPONENT_BACKGROUND,
-                type: TYPE_RECORDING_FRAME,
-                recordType: recordType,
-                audioId: audioDeviceId,
-                videoId: videoDeviceId,
-                startRecordingTimeMs: startRecordingTimeMs,
-                ctlLeftPointer: ctlLeftPointer,
-                ctlTopPointer: ctlTopPointer,
-                mouseRangeLeftPointer: mouseRangeLeftPointer,
-                mouseRangeTopPointer: mouseRangeTopPointer,
-                cameraSize: cameraSize
-            });
+        setTabId(id);
+        if (getIsRecording()) {
+            chrome.tabs.sendMessage(id, {
+                tabId: id,
+                component: getComponentBackground(),
+                type: getTypeRecordingFrame(),
+                recordType: getRecordType(),
+                audioId: getAudioDeviceId(),
+                videoId: getVideoDeviceId(),
+                startRecordingTimeMs: getStartRecordingTimeMs(),
+                ctlLeftPointer: getCtlLeftPointer(),
+                ctlTopPointer: getCtlTopPointer(),
+                mouseRangeLeftPointer: getMouseRangeLeftPointer(),
+                mouseRangeTopPointer: getMouseRangeTopPointer(),
+                cameraSize: getCameraSize()
+            }).then((response) => {
+            }).catch((error) => {});
         }
-        chrome.tabs.sendMessage(tabId, {
-            tabId: tabId,
-            component: COMPONENT_BACKGROUND,
-            type: TYPE_INSTALLED_CHROME_EXT
-        });
+        chrome.tabs.sendMessage(id, {
+            tabId: id,
+            component: getComponentBackground(),
+            type: getTypeInstalledChromeExt()
+        }).then((response) => {
+        }).catch((error) => {});
     }
 });
 
@@ -75,8 +102,9 @@ chrome.tabs.onUpdated.addListener((id, info, tab) => {
  * content -> background -> content
  */
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (!isRecording) {
+    console.log("message listener")
+    if (!getIsRecording()) {
     }
-    execute(request, sendResponse);
+    execute(request, sendResponse, sender);
     return true;
 });

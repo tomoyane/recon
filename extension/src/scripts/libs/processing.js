@@ -1,130 +1,195 @@
-import {generateUuid, convertUrlToBlob} from './util'
+import {
+    generateUuid,
+    convertUrlToBlob
+} from './util'
+
+import {
+    setTabId,
+    getTabId,
+    getComponentPopup,
+    getStartPopup,
+    getComponentBackground,
+    getTypeMenuFrame,
+    setVideoDeviceId,
+    setAudioDeviceId,
+    setCtlLeftPointer,
+    setCtlTopPointer,
+    setMouseRangeTopPointer,
+    setMouseRangeLeftPointer,
+    setRecordType,
+    setIsRecording,
+    setMediaStream,
+    setCameraSize,
+    getTypeRecordingFrame,
+    getAudioDeviceId,
+    getVideoDeviceId,
+    getComponentContent,
+    getTypeStartRecording,
+    setVideoTitle,
+    getTypeStopRecording,
+    setVideoId,
+    setBlob,
+    getTypeForceStopRecording,
+    getTypeNoFrame,
+    getTypeUpdateFramePointer,
+    getTypeUpdateCameraSize,
+    getMediaStream,
+    getRecorder,
+    setRecorder,
+    getChunks,
+    setStartRecordingTimeMs,
+    getStartRecordingMs,
+    getBlob,
+    getVideoId,
+    setChunks, getTypeSaveVideo,
+} from "../constant"
 
 /**
  * Execute main process.
  */
-export function execute(request, sendResponse) {
-    tabId = request.tabId;
+export function execute(request, sendResponse, sender) {
+    setTabId(request.tabId);
     const type = request.type;
     const component = request.component;
+    console.log("main process " + type + " " + component)
 
     /**
      * Record frame
      */
-    if (component === COMPONENT_POPUP && type === TYPE_POPUP) {
-        chrome.tabs.sendMessage(tabId, {tabId: tabId, component: COMPONENT_BACKGROUND, type: TYPE_MENU_FRAME});
-        return TYPE_MENU_FRAME;
+    if (component === getComponentPopup() && type === getStartPopup()) {
+        chrome.tabs.sendMessage(getTabId(), {
+            tabId: getTabId(),
+            component: getComponentBackground(),
+            type: getTypeMenuFrame()
+        }).then((response) => {
+        }).catch((error) => {
+        });
+        return getTypeMenuFrame();
     }
 
     /**
      * Start recording
      */
-    if (component === COMPONENT_CONTENT && type === TYPE_START_RECORDING) {
-        videoTitle = request.title;
-        chrome.desktopCapture.chooseDesktopMedia(['screen', 'window', 'tab'], function (streamId) {
-            audioDeviceId = request.audioId
-            videoDeviceId = request.videoId
+    if (component === getComponentContent() && type === getTypeStartRecording()) {
+        console.log("hello");
+        setVideoTitle(request.title);
+        chrome.desktopCapture.chooseDesktopMedia(['screen', 'window', 'tab'], sender.tab, function (streamId) {
+            setAudioDeviceId(request.audioId);
+            setVideoDeviceId(request.videoId);
+
+            console.log("hello2 " + streamId);
             if (streamId) {
-                navigator.getUserMedia(generateMediaOpt(streamId), function (stream) {
-                    if (request.topPointer !== null && request.leftPointer !== null) {
-                        ctlTopPointer = Math.abs(request.topPointer) + 'px';
-                        ctlLeftPointer = Math.abs(request.leftPointer) + 'px';
-                        mouseRangeTopPointer = Math.abs(request.topPointer) + 'px';
-                        mouseRangeLeftPointer = Math.abs(request.leftPointer) + 'px';
-                    }
-                    isRecording = true;
-                    mediaStream = stream;
-                    recordType = request.recordType;
-                    cameraSize = request.cameraSize;
-                    const isAudio = request.isAudio;
+                console.log("hello3-1");
+                var mediaInfo = generateMediaOpt(streamId);
+                console.log("hello3-2");
+                navigator.mediaDevices.getUserMedia(mediaInfo)
+                    .then((stream) => {
+                        if (request.topPointer !== null && request.leftPointer !== null) {
+                            setCtlTopPointer(Math.abs(request.topPointer) + 'px');
+                            setCtlLeftPointer(Math.abs(request.leftPointer) + 'px');
+                            setMouseRangeTopPointer(Math.abs(request.topPointer) + 'px');
+                            setMouseRangeLeftPointer(Math.abs(request.leftPointer) + 'px');
+                        }
+                        console.log("hello3-4");
+                        setIsRecording(true);
+                        setMediaStream(stream);
+                        setRecordType(request.recordType);
+                        setCameraSize(request.cameraSize);
+                        const isAudio = request.isAudio;
+                        console.log("hello3-5");
 
-                    if (isAudio) {
-                        navigator.getUserMedia({audio: true}, function (audioStream) {
-                            startRecording(audioStream);
-                        }, function (err) {
-                            isRecording = false;
-                            throw err;
-                        });
-                    } else {
-                        startRecording(null);
-                    }
+                        if (isAudio) {
+                            navigator.mediaDevices.getUserMedia({audio: true})
+                                .then((audioStream) => {
+                                    startRecording(audioStream);
+                                }).catch((audioErr) => {
+                                    setIsRecording(false);
+                                    throw err;
+                                });
+                        } else {
+                            startRecording(null);
+                        }
 
-                    sendResponse({
-                        component: COMPONENT_BACKGROUND,
-                        type: TYPE_RECORDING_FRAME,
-                        recordType: request.recordType,
-                        audioId: audioDeviceId,
-                        videoId: videoDeviceId,
-                    })
-                }, function (err) {
-                    isRecording = false;
-                    throw err;
-                });
+                        console.log("hello4");
+                        sendResponse({
+                            component: getComponentBackground(),
+                            type: getTypeRecordingFrame(),
+                            recordType: request.recordType,
+                            audioId: getAudioDeviceId(),
+                            videoId: getVideoDeviceId(),
+                        })
+
+                        console.log("hello5");
+                    }).catch((err) => {
+                        setIsRecording(false);
+                        // throw err;
+                        console.log(err);
+                    });
             }
         });
-        return TYPE_RECORDING_FRAME;
+        return getTypeRecordingFrame();
     }
 
     /**
      * Stop recording
      */
-    if (component === COMPONENT_CONTENT && type === TYPE_STOP_RECORDING) {
+    if (component === getComponentContent() && type === getTypeStopRecording()) {
         if (request.recordType === 2) {
-            videoId = generateUuid();
+            setVideoId(generateUuid());
             convertUrlToBlob(request.url).then(result => {
-                blob = result;
-                sendToDlCommand();
+                // setBlob(result);
+                sendToDlCommand(request.url);
             });
             sendResponse({
-                component: COMPONENT_BACKGROUND,
-                type: TYPE_STOP_RECORDING,
+                component: getComponentBackground(),
+                type: getTypeStopRecording(),
                 recordType: request.recordType
             })
         } else {
-            if (recorder !== null) {
-                recorder.stop();
+            if (getRecorder() !== null) {
+                getRecorder().stop();
             }
         }
 
-        if (mediaStream !== null) {
-            mediaStream.getTracks().forEach(track => {
+        if (getMediaStream() !== null) {
+            getMediaStream().getTracks().forEach(track => {
                 track.stop();
             });
         }
         initializeRecordVal();
-        return TYPE_NO_FRAME;
+        return getTypeNoFrame();
     }
 
     /**
      * Force stop recording
      */
-    if (component === COMPONENT_CONTENT && type === TYPE_FORCE_STOP_RECORDING) {
-        if (mediaStream !== null) {
-            mediaStream.getTracks().forEach(track => {
+    if (component === getComponentContent() && type === getTypeForceStopRecording()) {
+        if (getMediaStream() !== null) {
+            getMediaStream().getTracks().forEach(track => {
                 track.stop();
             });
         }
         initializeRecordVal();
-        return TYPE_NO_FRAME;
+        return getTypeNoFrame();
     }
 
     /**
      * Update frame pointer data. `update frame pointer`.
      */
-    if (component === COMPONENT_CONTENT && type === TYPE_UPDATE_FRAME_POINTER) {
-        ctlLeftPointer = request.ctlLeft;
-        ctlTopPointer = request.ctlTop;
-        mouseRangeLeftPointer = request.mouseRangeLeft;
-        mouseRangeTopPointer = request.mouseRangeTop;
-        return TYPE_NO_FRAME;
+    if (component === getComponentContent() && type === getTypeUpdateFramePointer()) {
+        setCtlLeftPointer(request.ctlLeft);
+        setCtlTopPointer(request.ctlTop);
+        setMouseRangeLeftPointer(request.mouseRangeLeft);
+        setMouseRangeTopPointer(request.mouseRangeTop);
+        return getTypeNoFrame();
     }
 
     /**
      * Update camera size. `update camera size`.
      */
-    if (component === COMPONENT_CONTENT && type === TYPE_UPDATE_CAMERA_SIZE) {
-        cameraSize = request.cameraSize;
-        return TYPE_NO_FRAME;
+    if (component === getComponentContent() && type === getTypeUpdateCameraSize()) {
+        setCameraSize(request.cameraSize);
+        return getTypeNoFrame();
     }
 }
 
@@ -133,46 +198,58 @@ export function execute(request, sendResponse) {
  */
 export function startRecording(audioStream) {
     if (audioStream !== null) {
-        mediaStream.addTrack(audioStream.getTracks()[0]);
+        getMediaStream().addTrack(audioStream.getTracks()[0]);
     }
 
-    mediaStream.getVideoTracks()[0].onended = () => {
-        chrome.tabs.sendMessage(tabId, {
-            tabId: tabId,
-            component: COMPONENT_BACKGROUND,
-            type: TYPE_STOP_RECORDING,
+    getMediaStream().getVideoTracks()[0].onended = () => {
+        chrome.tabs.sendMessage(getTabId(), {
+            tabId: getTabId(),
+            component: getComponentBackground(),
+            type: getTypeStopRecording(),
         });
-        recorder.stop();
+        getRecorder().stop();
     }
 
     const options = {
         mimeType: 'video/webm'
     };
-    recorder = new MediaRecorder(mediaStream, options);
-    recorder.ondataavailable = ev => {
+    setRecorder(new MediaRecorder(getMediaStream(), options));
+
+    getRecorder().ondataavailable = ev => {
+        const chunks = getChunks();
         chunks.push(ev.data);
+        setChunks(chunks);
     };
-    recorder.onstop = () => {
+    getRecorder().onstop = async () => {
         // Insert And Upload video data
-        videoId = generateUuid();
-        blob = new Blob(chunks, {type: 'video/webm'});
-        sendToDlCommand();
+        setVideoId(generateUuid());
+        setBlob(new Blob(getChunks(), {type: 'video/webm'}));
+        var url = await blobToBase64(getBlob());
+        sendToDlCommand(url);
 
         // Reset data
-        isRecording = false;
-        recordType = 0;
-        mediaStream.getTracks().forEach(track => {
+        setIsRecording(false);
+        setRecordType(0);
+        getMediaStream().getTracks().forEach(track => {
             track.stop();
         });
-        mediaStream = null;
+        setMediaStream(null);
     };
     setTimeout(function () {
         // Force stop is null when intercept
-        if (recorder !== null) {
-            recorder.start();
-            startRecordingTimeMs = new Date().getTime() / 1000;
+        if (getRecorder() !== null) {
+            getRecorder().start();
+            setStartRecordingTimeMs(new Date().getTime() / 1000);
         }
-    }, START_RECORDING_MS);
+    }, getStartRecordingMs());
+}
+
+function blobToBase64(blob) {
+    return new Promise((resolve, _) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+    });
 }
 
 /**
@@ -182,7 +259,7 @@ export function generateMediaOpt(streamId) {
     return {
         audio: {
             optional: [{
-                deviceId: {exact: audioDeviceId}
+                deviceId: {exact: getAudioDeviceId()}
             }],
             mandatory: {
                 chromeMediaSource: 'desktop',
@@ -199,26 +276,26 @@ export function generateMediaOpt(streamId) {
 }
 
 
-export function sendToDlCommand() {
-    chrome.tabs.sendMessage(tabId, {
-        tabId: tabId,
-        component: COMPONENT_BACKGROUND,
-        type: TYPE_SAVE_INDEXED_DB,
-        blobUrl: window.URL.createObjectURL(blob),
-        videoId: videoId,
+export function sendToDlCommand(url) {
+    chrome.tabs.sendMessage(getTabId(), {
+        tabId: getTabId(),
+        component: getComponentBackground(),
+        type: getTypeSaveVideo(),
+        blobUrl: url,
+        videoId: getVideoId(),
     });
 }
 
 export function initializeRecordVal(isSuccess = false) {
-    videoId = null;
-    chunks = [];
-    blob = null;
-    isRecording = false;
-    recorder = null;
-    ctlLeftPointer = null;
-    ctlTopPointer = null;
-    mouseRangeLeftPointer = null;
-    mouseRangeTopPointer = null;
-    startRecordingTimeMs = 0;
-    mediaStream = null;
+    setVideoId(null);
+    setChunks([]);
+    setBlob(null);
+    setIsRecording(false);
+    setRecorder(null);
+    setCtlLeftPointer(null);
+    setCtlTopPointer(null);
+    setMouseRangeTopPointer(null);
+    setMouseRangeLeftPointer(null);
+    setStartRecordingTimeMs(0);
+    setMediaStream(null);
 }

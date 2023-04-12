@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "recon",
   "description": "Video recording tool",
   "version": "0.0.1",
@@ -8,25 +8,40 @@
     "48": "extension/ic_logo.png",
     "128": "extension/ic_logo.png"
   },
-  "browser_action": {
+  "action": {
     "default_popup": "extension/popup.html"
   },
   "background": {
-    "scripts": [
-      "extension/constant.min.js",
-      "extension/environment.min.js",
-      "extension/background.min.js"
-    ],
-    "persistent": true
+    "service_worker": "extension/background.min.js",
+    "type": "module"
   },
   "web_accessible_resources": [
-    "ui-frame/index.html",
-    "ui-frame/index.html/*",
-    "ui-frame/*.js",
-    "ui-frame/assets/*",
-    "ui-frame/*.css"
+    {
+      "resources": ["ui-frame/index.html"],
+      "matches": ["https://*/*"]
+    },
+    {
+      "resources": ["ui-frame/index.html/*"],
+      "matches": ["https://*/*"]
+    },
+    {
+      "resources": ["ui-frame/*.js"],
+      "matches": ["https://*/*"]
+    },
+    {
+      "resources": ["ui-frame/assets/*"],
+      "matches": ["https://*/*"]
+    },
+    {
+      "resources": ["ui-frame/*.css"],
+      "matches": ["https://*/*"]
+    },
+    {
+      "resources": ["extension/*"],
+      "matches": ["<all_urls>"],
+      "extension_ids": ["*"]
+    }
   ],
-  "content_security_policy": "script-src 'self' https://apis.google.com; object-src 'self'",
   "content_scripts": [
     {
       "matches": [
@@ -49,8 +64,9 @@
     "tabs",
     "cookies",
     "desktopCapture",
-    "https://app.uppy.jp/*",
-    "https://app.uppy-jp/*",
-    "https://dev-uppy.org/*"
+    "scripting",
+    "activeTab",
+    "downloads",
+    "tabCapture"
   ]
 }

@@ -99,8 +99,17 @@ export class RecorderService {
       return null;
     }
 
-    const url = window.URL.createObjectURL(this.blob);
+    const url = await this.blobToBase64(this.blob);
+    // const url = window.URL.createObjectURL(this.blob);
     this.blob = null;
     return url;
+  }
+
+  private blobToBase64(blob) {
+    return new Promise((resolve, _) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(blob);
+    });
   }
 }

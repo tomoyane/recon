@@ -4,27 +4,29 @@ const COMPONENT_POPUP = 'popup';
 /**
  * Call with close popup.
  */
+chrome.tabs.query({currentWindow: true, active: true}, tab => {
+    if (isForbiddenPage(tab[0].url)) {
+        insertCannotRecord();
+    } else {
+        const activeTabId = tab[0].id;
+        // if (chrome.extension.getBackgroundPage().isRecording) {
+        //     window.close();
+        //     return;
+        // }
+        // Request menu
+        chrome.runtime.sendMessage({
+            tabId: activeTabId,
+            component: COMPONENT_POPUP,
+            type: TYPE_POPUP
+        }).then((response) => {
+        }).catch((error) => {});
+    }
+});
+
 setTimeout(
     function call() {
-        chrome.tabs.query({currentWindow: true, active: true}, tab => {
-            if (isForbiddenPage(tab[0].url)) {
-                insertCannotRecord();
-            } else {
-                const activeTabId = tab[0].id;
-                if (chrome.extension.getBackgroundPage().isRecording) {
-                    window.close();
-                    return;
-                }
-                // Request menu
-                chrome.runtime.sendMessage({
-                    tabId: activeTabId,
-                    component: COMPONENT_POPUP,
-                    type: TYPE_POPUP
-                });
-                window.close();
-            }
-        });
-    }, 1000
+        window.close();
+    }, 300
 );
 
 /**
@@ -59,6 +61,5 @@ function insertCannotRecord() {
 
     const loading = document.getElementById('loading');
     document.body.insertBefore(data, loading);
-
     loading.style.display = 'none';
 }

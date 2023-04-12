@@ -1,12 +1,31 @@
 import {
-    convertUrlToBlob,
     calculateVideoTime,
     generateNotRecordingFrame,
     generateRecordingFrame,
     getBodyWebSite,
     removeReconTags,
 } from '../libs/util'
-import {saveIndexedDb} from '../libs/indexed-db-client'
+
+import {
+    getComponentBackground,
+    getComponentContent,
+    getFrameCountdown,
+    getFrameForceStopRecording,
+    getFrameShutdown,
+    getFrameStart,
+    getFrameStop,
+    getFrameUpdateCameraSize,
+    getInitFrameSleepMs,
+    getTypeForceStopRecording,
+    getTypeInstalledChromeExt,
+    getTypeMenuFrame,
+    getTypeRecordingFrame,
+    getTypeSaveVideo,
+    getTypeStartRecording,
+    getTypeStopRecording,
+    getTypeUpdateCameraSize,
+    getTypeUpdateFramePointer
+} from "../constant";
 
 let currentTabId = null;
 
@@ -18,34 +37,36 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     currentTabId = request.tabId;
     const type = request.type;
     const component = request.component;
+    console.log("call frame " + type + " " + component)
 
     /**
      * Create chrome extension installed tag.
      */
-    if (component === COMPONENT_BACKGROUND && type === TYPE_INSTALLED_CHROME_EXT) {
+    if (component === getComponentBackground() && type === getTypeInstalledChromeExt()) {
         createInstalledChromeExtTag();
     }
 
     /**
      * Create menu frame.
      */
-    if (component === COMPONENT_BACKGROUND && type === TYPE_MENU_FRAME) {
+    if (component === getComponentBackground() && type === getTypeMenuFrame()) {
         createMenuFrame();
     }
 
     /**
      * Create recording frame.
      */
-    if (component === COMPONENT_BACKGROUND && type === TYPE_RECORDING_FRAME) {
+    if (component === getComponentBackground() && type === getTypeRecordingFrame()) {
         const recordingTimeSecond = calculateVideoTime(request.startRecordingTimeMs);
         createRecordingFrame(request.recordType, request.audioId, request.videoId, request.ctlLeftPointer,
-            request.ctlTopPointer, request.mouseRangeLeftPointer, request.mouseRangeTopPointer, request.cameraSize, recordingTimeSecond);
+            request.ctlTopPointer, request.mouseRangeLeftPointer,
+            request.mouseRangeTopPointer, request.cameraSize, recordingTimeSecond);
     }
 
     /**
      * Stop recording by Chrome default button.
      */
-    if (component === COMPONENT_BACKGROUND && type === TYPE_STOP_RECORDING) {
+    if (component === getComponentBackground() && type === getTypeStopRecording()) {
         const reconFrame = document.getElementById('recon_frame');
         if (reconFrame === null) {
             return;
@@ -55,32 +76,31 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 
     /**
-     * Save IndexedDB
+     * Save Video
      */
-    if (component === COMPONENT_BACKGROUND && type === TYPE_SAVE_INDEXED_DB) {
-        convertUrlToBlob(request.blobUrl).then(blob => {
-            dl(blob);
-            // saveIndexedDb(blob, request.videoId);
-        });
+    if (component === getComponentBackground() && type === getTypeSaveVideo()) {
+        // convertUrlToBlob(request.blobUrl).then(blob => {
+        //     dl(blob);
+        //     saveIndexedDb(blob, request.videoId);
+        // });
+        dl(request.blobUrl);
     }
 });
 
-function dl(data) {
-    var saveData = (function () {
+function dl(url) {
+    const saveData = (function () {
         var a = document.createElement("a");
         document.body.appendChild(a);
         a.style = "display: none";
-        return function (data, fileName) {
-            a.href = window.URL.createObjectURL(data);
+        return function (data) {
+            a.href =data;
             a.download = 'recon_data_' + Date.now().toString();
             a.click();
             window.URL.revokeObjectURL(a.href);
         };
     }());
-    saveData(data);
+    saveData(url);
 }
-
-
 
 /**
  * Create chrome installed tag.
@@ -107,7 +127,7 @@ function createMenuFrame() {
         return;
     }
 
-    const frame = generateNotRecordingFrame(chrome.extension.getURL('ui-frame/index.html'));
+    const frame = generateNotRecordingFrame(chrome.runtime.getURL('ui-frame/index.html'));
     const body = getBodyWebSite();
     body.appendChild(frame);
 
@@ -125,7 +145,7 @@ function createCountdownFrame(recordType, audioId, videoId, topPointer, leftPoin
         return;
     }
 
-    const frame = generateNotRecordingFrame(chrome.extension.getURL('ui-frame/index.html#/countdown'));
+    const frame = generateNotRecordingFrame(chrome.runtime.getURL('ui-frame/index.html#/countdown'));
     const body = getBodyWebSite();
     body.appendChild(frame);
 
@@ -159,7 +179,7 @@ function createRecordingFrame(recordType, audioId, videoId, ctlLeftPointer,
         return;
     }
 
-    const frame = generateRecordingFrame(chrome.extension.getURL('ui-frame/index.html#/recording'),
+    const frame = generateRecordingFrame(chrome.runtime.getURL('ui-frame/index.html#/recording'),
         ctlLeftPointer, ctlTopPointer, mouseRangeLeftPointer, mouseRangeTopPointer, isBottom);
 
     const body = getBodyWebSite();
@@ -186,22 +206,25 @@ function createRecordingFrame(recordType, audioId, videoId, ctlLeftPointer,
  * Initialize frame.
  * Call UI Frame <-> Content Script.
  */
-function initializeFrame(recordType, isCountDown, audioId, videoId, topPointer = null, leftPointer = null, cameraSize = 1) {
+function initializeFrame(recordType, isCountDown, audioId, videoId,
+                         topPointer = null, leftPointer = null, cameraSize = 1) {
     removeReconTags();
     // Sleep create countdown frame
     setTimeout(
         function call() {
             if (isCountDown) {
                 createCountdownFrame(recordType, audioId, videoId, topPointer, leftPointer, cameraSize);
+
             } else {
                 const ctlTopPointer = topPointer !== null ? Math.abs(topPointer) + 'px' : null;
                 const ctlLeftPointer = leftPointer !== null ? Math.abs(leftPointer) + 'px' : null;
                 const mouseRangeTopPointer = topPointer !== null ? Math.abs(topPointer) + 'px' : null;
                 const mouseRangeLeftPointer = leftPointer !== null ? Math.abs(leftPointer) + 'px' : null;
+
                 createRecordingFrame(recordType, audioId, videoId, ctlLeftPointer, ctlTopPointer,
                     mouseRangeLeftPointer, mouseRangeTopPointer, cameraSize, 0, true);
             }
-        }, INITIALIZE_FRAME_SLEEP_MS
+        }, getInitFrameSleepMs()
     );
 }
 
@@ -230,13 +253,15 @@ function dragListener() {
     ctl.addEventListener('mouseup', function (e) {
         chrome.runtime.sendMessage({
             tabId: currentTabId,
-            component: COMPONENT_CONTENT,
-            type: TYPE_UPDATE_FRAME_POINTER,
+            component: getComponentContent(),
+            type: getTypeUpdateFramePointer(),
             ctlLeft: ctl.style.left,
             ctlTop: ctl.style.top,
             mouseRangeLeft: mouseRange.style.left,
             mouseRangeTop: mouseRange.style.top
-        });
+        }).then((response) => {
+        }).catch((error) => {});
+
         document.removeEventListener('mousemove', onMouseMove);
     });
 
@@ -251,12 +276,13 @@ function dragListener() {
  */
 function frameListener(event) {
     switch (event.data.type) {
-        case FRAME_SHUTDOWN:
+        case getFrameShutdown():
             removeEventListener('message', function () {
             });
             removeReconTags();
             break;
-        case FRAME_COUNTDOWN:
+
+        case getFrameCountdown():
             if (event.data.recordType === 2) {
                 initializeFrame(event.data.recordType, true, event.data.audioId,
                     event.data.videoId, event.data.topPointer, event.data.leftPointer, event.data.cameraSize);
@@ -265,8 +291,8 @@ function frameListener(event) {
             const title = document.getElementsByTagName('title')[0].innerHTML;
             chrome.runtime.sendMessage({
                 tabId: currentTabId,
-                component: COMPONENT_CONTENT,
-                type: TYPE_START_RECORDING,
+                component: getComponentContent(),
+                type: getTypeStartRecording(),
                 recordType: event.data.recordType,
                 isAudio: event.data.isAudio,
                 audioId: event.data.audioId,
@@ -275,72 +301,52 @@ function frameListener(event) {
                 topPointer: event.data.topPointer,
                 leftPointer: event.data.leftPointer,
                 title: (title === undefined || title === null) ? '' : title
-            }, function (res) {
-                if (res.component === COMPONENT_BACKGROUND && res.type === TYPE_RECORDING_FRAME) {
+            }).then((res) => {
+                if (res.component === getComponentBackground() && res.type === getTypeRecordingFrame()) {
                     initializeFrame(event.data.recordType, true, event.data.audioId,
                         event.data.videoId, event.data.topPointer, event.data.leftPointer, event.data.cameraSize);
                 }
-            });
+            }).catch((error) => {});
             break;
-        case FRAME_START:
+
+        case getFrameStart():
             initializeFrame(event.data.recordType, false, event.data.audioId,
                 event.data.videoId, event.data.topPointer, event.data.leftPointer, event.data.cameraSize);
             break;
-        case FRAME_STOP:
+
+        case getFrameStop():
             chrome.runtime.sendMessage({
                 tabId: currentTabId,
-                component: COMPONENT_CONTENT,
-                type: TYPE_STOP_RECORDING,
+                component: getComponentContent(),
+                type: getTypeStopRecording(),
                 recordType: event.data.recordType,
                 url: event.data.url,
-            }, function (res) {
-                removeEventListener('message', function () {
-                });
+            }).then((res) => {
+                removeEventListener('message', function () {});
                 removeReconTags();
-            });
+            }).catch((error) => {});
             break;
-        case FRAME_FORCE_STOP_RECORDING:
+        case getFrameForceStopRecording():
+
             chrome.runtime.sendMessage({
                 tabId: currentTabId,
-                component: COMPONENT_CONTENT,
-                type: TYPE_FORCE_STOP_RECORDING
-            });
-            this.removeEventListener('message', function () {
-            });
+                component: getComponentContent(),
+                type: getTypeForceStopRecording()
+            }).then((response) => {
+            }).catch((error) => {});
+
+            this.removeEventListener('message', function () {});
             removeReconTags();
             break;
 
-        case FRAME_SIGN_IN_SUCCESS:
+        case getFrameUpdateCameraSize():
             chrome.runtime.sendMessage({
                 tabId: currentTabId,
-                component: COMPONENT_CONTENT,
-                type: TYPE_SIGN_IN_SUCCESS,
-                res: event.data.body
-            });
-            this.removeEventListener('message', function () {
-            });
-            removeReconTags();
-            break;
-        case FRAME_REQ_NOTIFICATION:
-            chrome.runtime.sendMessage({
-                tabId: currentTabId,
-                component: COMPONENT_CONTENT,
-                type: TYPE_REQ_NOTIFICATION,
-            }, function (res) {
-                const reconFrame = document.getElementById('recon_iframe');
-                reconFrame.contentWindow.postMessage({
-                    type: FRAME_RES_NOTIFICATION,
-                    body: res.body
-                }, '*');
-            });
-            break;
-        case FRAME_UPDATE_CAMERA_SIZE:
-            chrome.runtime.sendMessage({
-                tabId: currentTabId,
-                component: COMPONENT_CONTENT,
-                type: TYPE_UPDATE_CAMERA_SIZE,
+                component: getComponentContent(),
+                type: getTypeUpdateCameraSize(),
                 cameraSize: event.data.cameraSize
-            });
+            }).then((response) => {
+            }).catch((error) => {});
             break;
     }
 }
