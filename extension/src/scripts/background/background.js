@@ -19,7 +19,6 @@ import {
     getTypeInstalledChromeExt
 } from "../constant"
 
-
 /**
  * Initial install Listener.
  */

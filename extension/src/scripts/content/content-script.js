@@ -327,7 +327,6 @@ function frameListener(event) {
             }).catch((error) => {});
             break;
         case getFrameForceStopRecording():
-
             chrome.runtime.sendMessage({
                 tabId: currentTabId,
                 component: getComponentContent(),
@@ -337,8 +336,7 @@ function frameListener(event) {
 
             this.removeEventListener('message', function () {});
             removeReconTags();
-            break;
-
+            break
         case getFrameUpdateCameraSize():
             chrome.runtime.sendMessage({
                 tabId: currentTabId,
