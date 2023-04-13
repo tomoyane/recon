@@ -5,8 +5,8 @@
 
 ### About RECON
 RECON is software that runs as a Google Chrome extension.  
-RECON supports Screen only, Screen and Camera, Camera only data can be taken and <b>webm</b> files can be downloaded to your own computer.  
-Implementation recon by <b>WebRTC, Angular</b>
+RECON supports Screen only, Screen and Camera, Camera only data can be taken and <b>webm</b> files can be downloaded to your own computer. 
+
 
 ### How to build
 ```bash
