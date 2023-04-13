@@ -1,4 +1,4 @@
-![recon](store/logo.png)
+<img src="store/logo.png" width="300">
 
 ## RECON - Video recording tool for Chrome extension
 <b>※ This source code supports only manifest v2.</b>
