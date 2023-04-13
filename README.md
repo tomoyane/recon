@@ -11,8 +11,8 @@ https://user-images.githubusercontent.com/9509132/231678503-1cc5babf-1459-4eef-a
 
 ### How to build
 ```bash
-./build.sh --install
-./build.sh --build
+make --install-dep
+make --build-dev
 ```
 
 You can upload a `dist-dev` package to [chrome://extensions](chrome://extensions)

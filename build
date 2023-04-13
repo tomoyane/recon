@@ -52,10 +52,10 @@ cd ./ui-frame
 
 if [ "$ENV" -eq 0 ]; then
   echo "Build ui-frame development mode"
-  ng build --aot
+  NODE_OPTIONS=--openssl-legacy-provider ng build --aot
 else
   echo "Build ui-frame production mode"
-  ng build --prod
+  NODE_OPTIONS=--openssl-legacy-provider ng build --prod
 fi
 
 cp -r dist/ui-frame ../${dir_name}/ui-frame
@@ -67,10 +67,10 @@ cd extension
 
 if [ "$ENV" -eq 0 ]; then
   echo "Build extension development mode"
-  npm run clean build; npm run build-dev;
+  npm run clean build; NODE_OPTIONS=--openssl-legacy-provider npm run build-dev;
 else
   echo "Build extension production mode"
-  npm run clean build; npm run build-prod;
+  npm run clean build; NODE_OPTIONS=--openssl-legacy-provider npm run build-prod;
 fi
 
 cp -r dist ../${dir_name}/extension
