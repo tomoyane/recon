@@ -66,6 +66,12 @@ export function getTypeRecordingFrame() {
     return TYPE_RECORDING_FRAME;
 }
 
+var TYPE_START_MEDIA_FRAME = 'start_user_media_frame';
+export function getTypeStartMediaFrame() {
+    return TYPE_START_MEDIA_FRAME;
+}
+
+
 var recordType = 0;
 export function setRecordType(r) {
     recordType = r;

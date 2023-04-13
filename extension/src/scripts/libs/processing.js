@@ -1,6 +1,6 @@
 import {
     generateUuid,
-    convertUrlToBlob
+    convertUrlToBlob, generateMediaOpt
 } from './util'
 
 import {
@@ -41,7 +41,7 @@ import {
     getStartRecordingMs,
     getBlob,
     getVideoId,
-    setChunks, getTypeSaveVideo,
+    setChunks, getTypeSaveVideo, getTypeStartMediaFrame,
 } from "../constant"
 
 /**
@@ -80,51 +80,64 @@ export function execute(request, sendResponse, sender) {
             console.log("hello2 " + streamId);
             if (streamId) {
                 console.log("hello3-1");
-                var mediaInfo = generateMediaOpt(streamId);
-                console.log("hello3-2");
-                navigator.mediaDevices.getUserMedia(mediaInfo)
-                    .then((stream) => {
-                        if (request.topPointer !== null && request.leftPointer !== null) {
-                            setCtlTopPointer(Math.abs(request.topPointer) + 'px');
-                            setCtlLeftPointer(Math.abs(request.leftPointer) + 'px');
-                            setMouseRangeTopPointer(Math.abs(request.topPointer) + 'px');
-                            setMouseRangeLeftPointer(Math.abs(request.leftPointer) + 'px');
-                        }
-                        console.log("hello3-4");
-                        setIsRecording(true);
-                        setMediaStream(stream);
-                        setRecordType(request.recordType);
-                        setCameraSize(request.cameraSize);
-                        const isAudio = request.isAudio;
-                        console.log("hello3-5");
 
-                        if (isAudio) {
-                            navigator.mediaDevices.getUserMedia({audio: true})
-                                .then((audioStream) => {
-                                    startRecording(audioStream);
-                                }).catch((audioErr) => {
-                                    setIsRecording(false);
-                                    throw err;
-                                });
-                        } else {
-                            startRecording(null);
-                        }
+                chrome.tabs.sendMessage(sender.tab.id, {
+                    tabId: sender.tab.id,
+                    component: getComponentBackground(),
+                    type: getTypeStartMediaFrame(),
+                    streamId: streamId,
+                    topPointer: request.topPointer,
+                    leftPointer: request.leftPointer,
+                    recordType: request.recordType,
+                    cameraSize: request.cameraSize,
+                    isAudio: request.isAudio,
+                }).then((response) => {
+                }).catch((error) => {
+                });
 
-                        console.log("hello4");
-                        sendResponse({
-                            component: getComponentBackground(),
-                            type: getTypeRecordingFrame(),
-                            recordType: request.recordType,
-                            audioId: getAudioDeviceId(),
-                            videoId: getVideoDeviceId(),
-                        })
-
-                        console.log("hello5");
-                    }).catch((err) => {
-                        setIsRecording(false);
-                        // throw err;
-                        console.log(err);
-                    });
+                // navigator.mediaDevices.getUserMedia(mediaInfo)
+                //     .then((stream) => {
+                //         if (request.topPointer !== null && request.leftPointer !== null) {
+                //             setCtlTopPointer(Math.abs(request.topPointer) + 'px');
+                //             setCtlLeftPointer(Math.abs(request.leftPointer) + 'px');
+                //             setMouseRangeTopPointer(Math.abs(request.topPointer) + 'px');
+                //             setMouseRangeLeftPointer(Math.abs(request.leftPointer) + 'px');
+                //         }
+                //         console.log("hello3-4");
+                //         setIsRecording(true);
+                //         setMediaStream(stream);
+                //         setRecordType(request.recordType);
+                //         setCameraSize(request.cameraSize);
+                //         const isAudio = request.isAudio;
+                //         console.log("hello3-5");
+                //
+                //         if (isAudio) {
+                //             navigator.mediaDevices.getUserMedia({audio: true})
+                //                 .then((audioStream) => {
+                //                     startRecording(audioStream);
+                //                 }).catch((audioErr) => {
+                //                     setIsRecording(false);
+                //                     throw err;
+                //                 });
+                //         } else {
+                //             startRecording(null);
+                //         }
+                //
+                //         console.log("hello4");
+                //         sendResponse({
+                //             component: getComponentBackground(),
+                //             type: getTypeRecordingFrame(),
+                //             recordType: request.recordType,
+                //             audioId: getAudioDeviceId(),
+                //             videoId: getVideoDeviceId(),
+                //         })
+                //
+                //         console.log("hello5");
+                //     }).catch((err) => {
+                //         setIsRecording(false);
+                //         // throw err;
+                //         console.log(err);
+                //     });
             }
         });
         return getTypeRecordingFrame();
@@ -251,30 +264,6 @@ function blobToBase64(blob) {
         reader.readAsDataURL(blob);
     });
 }
-
-/**
- * Generate Media Option.
- */
-export function generateMediaOpt(streamId) {
-    return {
-        audio: {
-            optional: [{
-                deviceId: {exact: getAudioDeviceId()}
-            }],
-            mandatory: {
-                chromeMediaSource: 'desktop',
-                chromeMediaSourceId: streamId,
-            }
-        },
-        video: {
-            mandatory: {
-                chromeMediaSource: 'desktop',
-                chromeMediaSourceId: streamId,
-            }
-        }
-    };
-}
-
 
 export function sendToDlCommand(url) {
     chrome.tabs.sendMessage(getTabId(), {

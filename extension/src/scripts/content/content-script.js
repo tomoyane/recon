@@ -1,12 +1,17 @@
 import {
     calculateVideoTime,
+    generateMediaOpt,
     generateNotRecordingFrame,
     generateRecordingFrame,
+    generateUuid,
     getBodyWebSite,
     removeReconTags,
 } from '../libs/util'
 
 import {
+    getAudioDeviceId,
+    getBlob,
+    getChunks,
     getComponentBackground,
     getComponentContent,
     getFrameCountdown,
@@ -16,16 +21,37 @@ import {
     getFrameStop,
     getFrameUpdateCameraSize,
     getInitFrameSleepMs,
+    getMediaStream,
+    getRecorder,
+    getStartRecordingMs,
+    getTabId,
     getTypeForceStopRecording,
     getTypeInstalledChromeExt,
     getTypeMenuFrame,
     getTypeRecordingFrame,
     getTypeSaveVideo,
+    getTypeStartMediaFrame,
     getTypeStartRecording,
     getTypeStopRecording,
     getTypeUpdateCameraSize,
-    getTypeUpdateFramePointer
+    getTypeUpdateFramePointer,
+    getVideoDeviceId,
+    setBlob,
+    setCameraSize,
+    setChunks,
+    setCtlLeftPointer,
+    setCtlTopPointer,
+    setIsRecording,
+    setMediaStream,
+    setMouseRangeLeftPointer,
+    setMouseRangeTopPointer,
+    setRecorder,
+    setRecordType,
+    setStartRecordingTimeMs,
+    setVideoId
 } from "../constant";
+
+import {sendToDlCommand} from "../libs/processing";
 
 let currentTabId = null;
 
@@ -34,6 +60,10 @@ let currentTabId = null;
  */
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({});
+    mainProcess(request, sender);
+});
+
+function mainProcess(request, sender) {
     currentTabId = request.tabId;
     const type = request.type;
     const component = request.component;
@@ -57,6 +87,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
      * Create recording frame.
      */
     if (component === getComponentBackground() && type === getTypeRecordingFrame()) {
+        console.log("call recording frame")
         const recordingTimeSecond = calculateVideoTime(request.startRecordingTimeMs);
         createRecordingFrame(request.recordType, request.audioId, request.videoId, request.ctlLeftPointer,
             request.ctlTopPointer, request.mouseRangeLeftPointer,
@@ -85,7 +116,108 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         // });
         dl(request.blobUrl);
     }
-});
+
+    /**
+     * Generate stream media
+     */
+    if (component === getComponentBackground() && type === getTypeStartMediaFrame()) {
+        navigator.mediaDevices.getUserMedia(generateMediaOpt(request.streamId))
+        .then((stream) => {
+            if (request.topPointer !== null && request.leftPointer !== null) {
+                setCtlTopPointer(Math.abs(request.topPointer) + 'px');
+                setCtlLeftPointer(Math.abs(request.leftPointer) + 'px');
+                setMouseRangeTopPointer(Math.abs(request.topPointer) + 'px');
+                setMouseRangeLeftPointer(Math.abs(request.leftPointer) + 'px');
+            }
+            setIsRecording(true);
+            setMediaStream(stream);
+            setRecordType(request.recordType);
+            setCameraSize(request.cameraSize);
+            const isAudio = request.isAudio;
+
+            if (isAudio) {
+                // navigator.mediaDevices.getUserMedia({audio: true})
+                //     .then((audioStream) => {
+                //         startRecording(audioStream);
+                //     }).catch((audioErr) => {
+                //         setIsRecording(false);
+                //         throw audioErr;
+                //     });
+                startRecording(null);
+            } else {
+                startRecording(null);
+            }
+
+            request.component = getComponentBackground();
+            request.type = getTypeRecordingFrame();
+            request.audioId = getAudioDeviceId();
+            request.videoId = getVideoDeviceId();
+            mainProcess(request, sender);
+
+        }).catch((err) => {
+            setIsRecording(false);
+            console.log(err);
+        });
+    }
+}
+
+function startRecording(audioStream) {
+    if (audioStream !== null) {
+        getMediaStream().addTrack(audioStream.getTracks()[0]);
+    }
+
+    getMediaStream().getVideoTracks()[0].onended = () => {
+        chrome.tabs.sendMessage(getTabId(), {
+            tabId: getTabId(),
+            component: getComponentBackground(),
+            type: getTypeStopRecording(),
+        });
+        getRecorder().stop();
+    }
+
+    const options = {
+        mimeType: 'video/webm'
+    };
+    var recorder = new MediaRecorder(getMediaStream(), options);
+    setRecorder(recorder);
+
+    recorder.ondataavailable = ev => {
+        const chunks = getChunks();
+        chunks.push(ev.data);
+        setChunks(chunks);
+    };
+    recorder.onstop = () => {
+        // Insert And Upload video data
+        setVideoId(generateUuid());
+        setBlob(new Blob(getChunks(), {type: 'video/webm'}));
+        blobToBase64(getBlob()).then(base64Data => {
+            sendToDlCommand(base64Data);
+
+            // Reset data
+            setIsRecording(false);
+            setRecordType(0);
+            getMediaStream().getTracks().forEach(track => {
+                track.stop();
+            });
+            setMediaStream(null);
+        })
+    };
+    setTimeout(function () {
+        // Force stop is null when intercept
+        if (recorder !== null) {
+            recorder.start();
+            setStartRecordingTimeMs(new Date().getTime() / 1000);
+        }
+    }, getStartRecordingMs());
+}
+
+function blobToBase64(blob) {
+    return new Promise((resolve, _) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+    });
+}
 
 function dl(url) {
     const saveData = (function () {
@@ -173,6 +305,7 @@ function createRecordingFrame(recordType, audioId, videoId, ctlLeftPointer,
                               ctlTopPointer, mouseRangeLeftPointer, mouseRangeTopPointer, cameraSize,
                               recordingTime = 0, isBottom = false) {
 
+    document.getElementById("recon_frame").remove();
     let reconFrame = document.getElementById('recon_frame');
     // Prevent multiple running
     if (reconFrame !== null) {
@@ -184,6 +317,7 @@ function createRecordingFrame(recordType, audioId, videoId, ctlLeftPointer,
 
     const body = getBodyWebSite();
     body.appendChild(frame);
+    console.log('created!!!!')
     dragListener();
 
     // Post record type

@@ -20,6 +20,7 @@
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
-    "copy-webpack-plugin": "^6.0.4"
+    "copy-webpack-plugin": "^6.0.4",
+    "regenerator-runtime": "^0.13.11"
   }
 }

@@ -1,3 +1,5 @@
+import {getAudioDeviceId} from "../constant";
+
 /**
  * Generate uuid.
  */
@@ -113,4 +115,27 @@ export function removeReconTags() {
     if (reconFrame !== null) {
         reconFrame.remove();
     }
+}
+
+/**
+ * Generate Media Option.
+ */
+export function generateMediaOpt(streamId) {
+    return {
+        audio: {
+            optional: [{
+                deviceId: {exact: getAudioDeviceId()}
+            }],
+            mandatory: {
+                chromeMediaSource: 'desktop',
+                chromeMediaSourceId: streamId,
+            },
+        },
+        video: {
+            mandatory: {
+                chromeMediaSource: 'desktop',
+                chromeMediaSourceId: streamId,
+            }
+        }
+    };
 }
