@@ -21,4 +21,4 @@ You can upload a `dist-dev` package to [chrome://extensions](chrome://extensions
 <img src="store/ic_frame.png" width="200">
 
 ## License
-[MIT](https://github.com/tomoyane/grant-n-z/blob/master/LICENSE)
+[Apchae-2.0](https://github.com/tomoyane/grant-n-z/blob/master/LICENSE)
